@@ -39,24 +39,8 @@ void setup() {
   
 }
 
-void loop()
-{ 
-  // read the state of the pushbutton value:
-  buttonState = digitalRead(buttonPin);
-  
-  if (count == 10){
-    count = 0;
-    
-  }
-  // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-  if (buttonState == HIGH) {
-    count = count + 1;
-    delay(200);
-    
-  }
-
+void showLED(int number){
   //Valid range is from 1 to 9
-  number = count;
   if (number>=1 && number<=9){
     //Print number to 7 segment display
     disp.writeDigit(number);
@@ -72,4 +56,26 @@ void loop()
   else {
     disp.clearDisp();
   }
+}
+
+void buttonCounter(){
+  // read the state of the pushbutton value:
+  buttonState = digitalRead(buttonPin);
+  
+  if (count == 10){
+    count = 0;
+  }
+  // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
+  if (buttonState == HIGH) {
+    count = count + 1;
+    delay(200);
+  }
+}
+
+void loop()
+{ 
+
+  buttonCounter();
+  showLED(count);
+
 }
