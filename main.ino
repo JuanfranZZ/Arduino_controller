@@ -1,4 +1,3 @@
-
 //Library
 #include "SevenSeg.h"
 
@@ -27,7 +26,7 @@ const int dotPin = 4;
 int delayFin = 3000;
 bool finish = true;
 bool starting = false;
-int timeScale = 1000*60*10; // 10min each unit
+const long int timeScale = 600000; // 10min each unit
 
 
 // Rele variables
@@ -119,16 +118,20 @@ bool isDelayFin(int delaySelected){
 bool runTimer(int numbering){
   int stepTime = 50;
   bool light = true;
-  int t0 = 0;
-  int timer = 0;
+  long int t0 = 0;
+  long int timer = 0;
 
   timer = numbering * timeScale;
+  Serial.print("timeScale:");
+  Serial.println(timeScale);
+  delay(1000);
   t0 = timer;
   while (!isButtonPressed() && timer >= 0){
     if ((t0-timer)/500 > 0){
       t0 = timer;
       light = blinkLED(light);
     }
+    Serial.println(timer);
     if (timer/1000 == 0){
       Serial.println("exit");   
       delay(1000);   
