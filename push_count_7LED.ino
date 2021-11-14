@@ -30,6 +30,7 @@ const int dotPin = 4;
 int delayFin = 3000;
 bool finish = true;
 bool starting = false;
+int timeScale = 2000;
 
 // SET UP --------------------------------------------------------------
 
@@ -57,8 +58,8 @@ void setup() {
 
 
 void showLED(int number){
-  //Valid range is from 1 to 9
-  if (number>=1 && number<=9){
+  //Valid range is from 0 to 9
+  if (number>=0 && number<=9){
     //Print number to 7 segment display
     disp.writeDigit(number);
       //Print message to serial monitor only once
@@ -116,13 +117,9 @@ bool runTimer(int numbering){
   int t0 = 0;
   int timer = 0;
 
-  timer = numbering * 1000;
+  timer = numbering * timeScale;
   t0 = timer;
   while (!isButtonPressed() && timer >= 0){
-    delay(stepTime);
-    timer = timer - stepTime;
-    count = timer/1000;
-    showLED(count);
     if ((t0-timer)/500 > 0){
       t0 = timer;
       light = blinkLED(light);
@@ -132,6 +129,10 @@ bool runTimer(int numbering){
       delay(1000);   
       return true;
     }
+    delay(stepTime);
+    count = timer/timeScale;
+    showLED(count);
+    timer = timer - stepTime;
   }
   Serial.println("Button pressed");
   return true;
@@ -153,6 +154,7 @@ void loop()
 {
   Serial.println("Starting...");
   while (!isDelayFin(delayFin) or count == 0){
+    disp.clearDisp();
     buttonCounter();
     showLED(count);
     starting = true;
