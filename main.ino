@@ -1,6 +1,3 @@
-/* Arduino Tutorial - 7 Segment 
-   One 7 segment is one digit, from 0 to  9.
-   Dev: Vasilakis Michalis // Date: 25/7/2015 // www.ardumotive.com */
 
 //Library
 #include "SevenSeg.h"
