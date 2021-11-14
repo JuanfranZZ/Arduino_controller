@@ -151,7 +151,7 @@ bool blinkLED(bool up){
 
 void loop()
 {
-  Serial.println("Iniciando...");
+  Serial.println("Starting...");
   while (!isDelayFin(delayFin) or count == 0){
     buttonCounter();
     showLED(count);
