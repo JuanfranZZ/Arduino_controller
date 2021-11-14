@@ -32,6 +32,10 @@ bool finish = true;
 bool starting = false;
 int timeScale = 2000;
 
+
+// Rele variables
+const int relePin = 12;
+
 // SET UP --------------------------------------------------------------
 
 void setup() {
@@ -51,6 +55,10 @@ void setup() {
 
   //Timer
   delayStart = millis();
+
+  //Rele
+  pinMode(relePin, OUTPUT);
+  releON(false);
   
 }
 
@@ -150,6 +158,16 @@ bool blinkLED(bool up){
 }
 
 
+void releON(bool s){
+  if (s == true){
+    digitalWrite(relePin, HIGH);
+  }
+  else{
+    digitalWrite(relePin, LOW);
+  }
+}
+
+
 void loop()
 {
   Serial.println("Starting...");
@@ -164,9 +182,11 @@ void loop()
     finish = false;
     starting = true;
     while (!finish){
+      releON(true);
       finish = runTimer(count);
     }
     starting = false;
+    releON(false);
   }
 
 }
