@@ -63,9 +63,6 @@ void showLED(int number){
     disp.writeDigit(number);
       //Print message to serial monitor only once
       if (flag==0){ 
-        //Print number to serial monitor
-        Serial.print("Number on 7 segment display:");
-        Serial.println(number);
         flag=1;
       }
   }
@@ -91,6 +88,8 @@ bool isButtonPressed(){
 
 
 void buttonCounter(){
+  Serial.print("Setting number:");
+  Serial.println(count);
   if (count == 10){
     count = 0;
   }
@@ -152,11 +151,10 @@ bool blinkLED(bool up){
 
 void loop()
 {
+  Serial.println("Iniciando...");
   while (!isDelayFin(delayFin) or count == 0){
-    Serial.println("Iniciando");
     buttonCounter();
     showLED(count);
-    Serial.println(count);
     starting = true;
   }
   while (isDelayFin(delayFin) && (count > 0) && starting){
