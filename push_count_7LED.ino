@@ -23,6 +23,16 @@ int flag;
 // variables will change:
 int buttonState = 0;         // variable for reading the pushbutton status
 
+//timer variables
+int delayStart = 0;
+long int timing = 0;
+const int dotPin = 4;
+int delayFin = 3000;
+bool finish = true;
+bool starting = false;
+
+// SET UP --------------------------------------------------------------
+
 void setup() {
   
   Serial.begin(9600);
@@ -36,15 +46,21 @@ void setup() {
   disp.setCommonAnode();
   //Control brightness (values 0-100);
   disp.setDutyCycle(50);
+  disp.setDPPin(dotPin);
+
+  //Timer
+  delayStart = millis();
   
 }
+
+// ----------------------------------------------------------- END SET UP
+
 
 void showLED(int number){
   //Valid range is from 1 to 9
   if (number>=1 && number<=9){
     //Print number to 7 segment display
     disp.writeDigit(number);
-    
       //Print message to serial monitor only once
       if (flag==0){ 
         //Print number to serial monitor
@@ -58,24 +74,98 @@ void showLED(int number){
   }
 }
 
-void buttonCounter(){
+void resetTiming(){
+  delayStart = millis();
+}
+
+bool isButtonPressed(){
   // read the state of the pushbutton value:
   buttonState = digitalRead(buttonPin);
-  
+  if (buttonState == HIGH){
+    resetTiming();
+    disp.clearDP();
+    return true;
+  }
+  return false;
+}
+
+
+void buttonCounter(){
   if (count == 10){
     count = 0;
   }
   // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-  if (buttonState == HIGH) {
+  if (isButtonPressed()) {
     count = count + 1;
     delay(200);
   }
 }
 
-void loop()
-{ 
 
-  buttonCounter();
-  showLED(count);
+bool isDelayFin(int delaySelected){
+  timing = millis() - delayStart;
+  if (timing > delaySelected){
+    return true;
+  }
+  return false;
+}
+
+
+bool runTimer(int numbering){
+  int stepTime = 50;
+  bool light = true;
+  int t0 = 0;
+  int timer = 0;
+
+  timer = numbering * 1000;
+  t0 = timer;
+  while (!isButtonPressed() && timer >= 0){
+    delay(stepTime);
+    timer = timer - stepTime;
+    count = timer/1000;
+    showLED(count);
+    if ((t0-timer)/500 > 0){
+      t0 = timer;
+      light = blinkLED(light);
+    }
+    if (timer/1000 == 0){
+      Serial.println("exit");   
+      delay(1000);   
+      return true;
+    }
+  }
+  Serial.println("Button pressed");
+  return true;
+}
+
+bool blinkLED(bool up){
+  if(up){
+    disp.setDP();
+    return false;
+  }
+  else{
+    disp.clearDP();
+    return true;
+  }
+}
+
+
+void loop()
+{
+  while (!isDelayFin(delayFin) or count == 0){
+    Serial.println("Iniciando");
+    buttonCounter();
+    showLED(count);
+    Serial.println(count);
+    starting = true;
+  }
+  while (isDelayFin(delayFin) && (count > 0) && starting){
+    finish = false;
+    starting = true;
+    while (!finish){
+      finish = runTimer(count);
+    }
+    starting = false;
+  }
 
 }
