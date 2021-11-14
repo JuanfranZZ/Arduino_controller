@@ -27,7 +27,7 @@ const int dotPin = 4;
 int delayFin = 3000;
 bool finish = true;
 bool starting = false;
-int timeScale = 2000;
+int timeScale = 1000*60*10; // 10min each unit
 
 
 // Rele variables
