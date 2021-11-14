@@ -153,13 +153,14 @@ bool blinkLED(bool up){
 void loop()
 {
   Serial.println("Starting...");
-  while (!isDelayFin(delayFin) or count == 0){
-    disp.clearDisp();
+  count = -1;
+  starting = false;
+  while (!isDelayFin(delayFin) or starting == false){
     buttonCounter();
     showLED(count);
     starting = true;
   }
-  while (isDelayFin(delayFin) && (count > 0) && starting){
+  while (isDelayFin(delayFin) && (count >= 0) && starting){
     finish = false;
     starting = true;
     while (!finish){
